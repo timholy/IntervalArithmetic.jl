@@ -283,7 +283,7 @@ end
 ## Scalar functions on intervals (no directed rounding used)
 
 function mag(a::Interval{T}) where T<:Real
-    isempty(a) && return convert(eltype(a), NaN)
+    isempty(a) && return convert(T, NaN)
     # r1, r2 = setrounding(T, RoundUp) do
     #     abs(a.lo), abs(a.hi)
     # end
@@ -291,7 +291,7 @@ function mag(a::Interval{T}) where T<:Real
 end
 
 function mig(a::Interval{T}) where T<:Real
-    isempty(a) && return convert(eltype(a), NaN)
+    isempty(a) && return convert(T, NaN)
     zero(a.lo) ∈ a && return zero(a.lo)
     r1, r2 = setrounding(T, RoundDown) do
         abs(a.lo), abs(a.hi)
@@ -372,7 +372,7 @@ julia> signbit(@interval(-4,5))
 [0, 1]
 ```
 """
-function signbit(a::Interval) 
+function signbit(a::Interval)
     isempty(a) && return emptyinterval(a)
     return Interval(signbit(a.hi), signbit(a.lo))
 end
@@ -500,8 +500,8 @@ end
 Return the radius of the `Interval` `a`, such that
 `a ⊆ m ± radius`, where `m = mid(a)` is the midpoint.
 """
-function radius(a::Interval)
-    isempty(a) && return convert(eltype(a), NaN)
+function radius(a::Interval{T}) where {T}
+    isempty(a) && return convert(T, NaN)
     m = mid(a)
     return max(m - a.lo, a.hi - m)
 end
